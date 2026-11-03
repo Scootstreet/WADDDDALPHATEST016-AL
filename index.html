@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WADDDDALPHATEST016-AL</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --border-color: #e5e7eb;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        p.subtitle {
+            color: #6b7280;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 600;
+        }
+        .timer-box {
+            font-weight: bold;
+            color: #dc2626;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        .question-box {
+            margin-bottom: 25px;
+        }
+        .word {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #374151;
+            text-align: left;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .options-grid-vertical {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button.option-btn {
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        button.option-btn:hover {
+            border-color: var(--primary);
+            background-color: #e0e7ff;
+        }
+        button.option-btn.selected {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            outline: none;
+        }
+        .text-input:focus {
+            border-color: var(--primary);
+        }
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .action-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        .home-menu-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: bold;
+            background-color: #fff;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+        .home-menu-btn:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        .evaluation-list {
+            text-align: left;
+            max-height: 250px;
+            overflow-y: auto;
+            margin: 15px 0;
+            padding-right: 5px;
+            font-size: 0.9rem;
+        }
+        .eval-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+        .eval-item.correct {
+            background-color: #ecfdf5;
+            border-color: #a7f3d0;
+        }
+        .eval-item.incorrect {
+            background-color: #fef2f2;
+            border-color: #fecaca;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- MENU UTAMA (HOME) -->
+    <div id="home-screen">
+        <h1>Deutsch Quiz Center</h1>
+        <p class="subtitle">Pilih Quiz yang anda inginkan :</p>
+        <button class="home-menu-btn" onclick="startQuiz('article')">Artikel (Der/Die/Das) </button>
+        <button class="home-menu-btn" onclick="startQuiz('plural')">Tebak Plural</button>
+        <button class="home-menu-btn" onclick="startQuiz('meaning')">Arti Kata </button>
+    </div>
+
+    <!-- TAMPILAN KUIS -->
+    <div id="quiz-screen" class="hidden">
+        <div class="score-board">
+            <span id="score-text">Skor: 0</span>
+            <span id="progress-text">Soal: 1</span>
+        </div>
+        <div class="timer-box" id="timer-text">Waktu: 45s</div>
+
+        <div id="quiz-container">
+            <div class="question-box">
+                <div class="word" id="word-title">Apfel</div>
+            </div>
+
+            <!-- MODE ARTIKEL -->
+            <div id="step-article" class="hidden">
+                <div class="section-title">Pilih Artikel yang Tepat:</div>
+                <div class="options-grid">
+                    <button class="option-btn" onclick="submitArticleAnswer('der')">der</button>
+                    <button class="option-btn" onclick="submitArticleAnswer('die')">die</button>
+                    <button class="option-btn" onclick="submitArticleAnswer('das')">das</button>
+                </div>
+            </div>
+
+            <!-- MODE PLURAL -->
+            <div id="step-plural" class="hidden">
+                <div class="section-title">Pilih Bentuk Plural (Jamak):</div>
+                <div class="options-grid-vertical" id="plural-options"></div>
+            </div>
+
+            <!-- MODE KETIK ARTI -->
+            <div id="step-meaning" class="hidden">
+                <div class="section-title">Ketik Arti Bahasa Indonesia:</div>
+                <input type="text" id="meaning-input" class="text-input" placeholder="Masukkan arti kata..." autocomplete="off" onkeyup="handleKeyPress(event)">
+                <button class="action-btn" onclick="submitMeaningAnswer()">Jawab</button>
+            </div>
+        </div>
+
+        <button class="action-btn" onclick="goHome()" style="background-color: #6b7280; margin-top: 20px;">Keluar ke Menu Utama</button>
+    </div>
+
+    <!-- LAYAR SELESAI KUIS & EVALUASI -->
+    <div id="result-container" class="hidden">
+        <h2>Kuis Selesai! 🎉</h2>
+        <p id="final-score" style="font-size: 1.1rem; margin: 10px 0; font-weight: bold;"></p>
+        
+        <div class="section-title" style="margin-top: 15px;">Evaluasi Jawaban:</div>
+        <div class="evaluation-list" id="evaluation-list"></div>
+
+        <button class="action-btn" onclick="goHome()">Kembali ke Menu Utama</button>
+    </div>
+</div>
+
+<script>
+    const vocabList = [
+        { word: "Apfel", article: "der", plural: "die Äpfel", meaning: "Apel" },
+        { word: "Auto", article: "das", plural: "die Autos", meaning: "Mobil" },
+        { word: "Buch", article: "das", plural: "die Bücher", meaning: "Buku" },
+        { word: "Frau", article: "die", plural: "die Frauen", meaning: "Wanita" },
+        { word: "Kind", article: "das", plural: "die Kinder", meaning: "Anak" },
+        { word: "Haus", article: "das", plural: "die Häuser", meaning: "Rumah" },
+        { word: "Hund", article: "der", plural: "die Hunde", meaning: "Anjing" },
+        { word: "Katze", article: "die", plural: "die Katzen", meaning: "Kucing" },
+        { word: "Tisch", article: "der", plural: "die Tische", meaning: "Meja" },
+        { word: "Wasser", article: "das", plural: "die Wässer", meaning: "Air" },
+        { word: "Mann", article: "der", plural: "die Männer", meaning: "Pria" },
+        { word: "Baum", article: "der", plural: "die Bäume", meaning: "Pohon" },
+        { word: "Blume", article: "die", plural: "die Blumen", meaning: "Bunga" },
+        { word: "Sonne", article: "die", plural: "die Sonnen", meaning: "Matahari" },
+        { word: "Mond", article: "der", plural: "die Monde", meaning: "Bulan" },
+        { word: "Stuhl", article: "der", plural: "die Stühle", meaning: "Kursi" },
+        { word: "Fenster", article: "das", plural: "die Fenster", meaning: "Jendela" },
+        { word: "Tür", article: "die", plural: "die Türen", meaning: "Pintu" },
+        { word: "Schule", article: "die", plural: "die Schulen", meaning: "Sekolah" },
+        { word: "Lehrer", article: "der", plural: "die Lehrer", meaning: "Guru Laki-laki" },
+        { word: "Lehrerin", article: "die", plural: "die Lehrerinnen", meaning: "Guru Perempuan" },
+        { word: "Kaffee", article: "der", plural: "die Kaffees", meaning: "Kopi" },
+        { word: "Milch", article: "die", plural: "die Milchen", meaning: "Susu" },
+        { word: "Brot", article: "das", plural: "die Brote", meaning: "Roti" },
+        { word: "Käse", article: "der", plural: "die Käse", meaning: "Keju" },
+        { word: "Sofa", article: "das", plural: "die Sofas", meaning: "Sofa" },
+        { word: "Stift", article: "der", plural: "die Stifte", meaning: "Pulpen" },
+        { word: "Tasche", article: "die", plural: "die Taschen", meaning: "Tas" },
+        { word: "Uhr", article: "die", plural: "die Uhren", meaning: "Jam" },
+        { word: "Bett", article: "das", plural: "die Betten", meaning: "Tempat Tidur" },
+        { word: "Zimmer", article: "das", plural: "die Zimmer", meaning: "Kamar" },
+        { word: "Küche", article: "die", plural: "die Küchen", meaning: "Dapur" },
+        { word: "Garten", article: "der", plural: "die Gärten", meaning: "Taman" },
+        { word: "Fisch", article: "der", plural: "die Fische", meaning: "Ikan" },
+        { word: "Vogel", article: "der", plural: "die Vögel", meaning: "Burung" },
+        { word: "Ei", article: "das", plural: "die Eier", meaning: "Telur" },
+        { word: "Apfelsine", article: "die", plural: "die Apfelsinen", meaning: "Jeruk" },
+        { word: "Tee", article: "der", plural: "die Tees", meaning: "Teh" },
+        { word: "Saft", article: "der", plural: "die Säfte", meaning: "Jus" },
+        { word: "Lampe", article: "die", plural: "die Lampen", meaning: "Lampu" },
+        { word: "Computer", article: "der", plural: "die Computer", meaning: "Komputer" },
+        { word: "Handy", article: "das", plural: "die Handys", meaning: "HP" },
+        { word: "Zeitung", article: "die", plural: "die Zeitungen", meaning: "Koran" },
+        { word: "Stadt", article: "die", plural: "die Städte", meaning: "Kota" },
+        { word: "Land", article: "das", plural: "die Länder", meaning: "Negara" },
+        { word: "Flugzeug", article: "das", plural: "die Flugzeuge", meaning: "Pesawat" },
+        { word: "Zug", article: "der", plural: "die Züge", meaning: "Kereta Api" },
+        { word: "Bahnhof", article: "der", plural: "die Bahnhöfe", meaning: "Stasiun" },
+        { word: "Flughafen", article: "der", plural: "die Flughäfen", meaning: "Bandara" },
+        { word: "Mutter", article: "die", plural: "die Mütter", meaning: "Ibu" },
+        { word: "Vater", article: "der", plural: "die Väter", meaning: "Ayah" },
+        { word: "Schwester", article: "die", plural: "die Schwestern", meaning: "Saudara Perempuan" },
+        { word: "Bruder", article: "der", plural: "die Brüder", meaning: "Saudara Laki-laki" },
+        { word: "Freund", article: "der", plural: "die Freunde", meaning: "Teman Laki-laki" },
+        { word: "Freundin", article: "die", plural: "die Freundinnen", meaning: "Teman Perempuan" },
+        { word: "Himmel", article: "der", plural: "die Himmel", meaning: "Langit" },
+        { word: "Stern", article: "der", plural: "die Sterne", meaning: "Bintang" },
+        { word: "Weg", article: "der", plural: "die Wege", meaning: "Jalan" },
+        { word: "Straße", article: "die", plural: "die Straßen", meaning: "Jalan Raya" },
+        { word: "Brücke", article: "die", plural: "die Brücken", meaning: "Jembatan" },
+        { word: "Fluss", article: "der", plural: "die Flüsse", meaning: "Sungai" },
+        { word: "See", article: "der", plural: "die Seen", meaning: "Danau" },
+        { word: "Meer", article: "das", plural: "die Meere", meaning: "Laut" },
+        { word: "Berg", article: "der", plural: "die Berge", meaning: "Gunung" },
+        { word: "Wald", article: "der", plural: "die Wälder", meaning: "Hutan" },
+        { word: "Blatt", article: "das", plural: "die Blätter", meaning: "Daun" },
+        { word: "Gras", article: "das", plural: "die Gräser", meaning: "Rumput" },
+        { word: "Tier", article: "das", plural: "die Tiere", meaning: "Hewan" },
+        { word: "Pferd", article: "das", plural: "die Pferde", meaning: "Kuda" },
+        { word: "Kuh", article: "die", plural: "die Kühe", meaning: "Sapi" },
+        { word: "Schwein", article: "das", plural: "die Schweine", meaning: "Babi" },
+        { word: "Schaf", article: "das", plural: "die Schafe", meaning: "Domba" },
+        { word: "Hase", article: "der", plural: "die Hasen", meaning: "Kelinci" },
+        { word: "Maus", article: "die", plural: "die Mäuse", meaning: "Tikus" },
+        { word: "Stuhl", article: "der", plural: "die Stühle", meaning: "Kursi" },
+        { word: "Schrank", article: "der", plural: "die Schränke", meaning: "Lemari" },
+        { word: "Bett", article: "das", plural: "die Betten", meaning: "Kasur" },
+        { word: "Teppich", article: "der", plural: "die Teppiche", meaning: "Karpet" },
+        { word: "Wand", article: "die", plural: "die Wände", meaning: "Dinding" },
+        { word: "Boden", article: "der", plural: "die Böden", meaning: "Lantai" },
+        { word: "Dach", article: "das", plural: "die Dächer", meaning: "Atap" },
+        { word: "Garten", article: "der", plural: "die Gärten", meaning: "Kebun" },
+        { word: "Blume", article: "die", plural: "die Blumen", meaning: "Bunga" },
+        { word: "Glas", article: "das", plural: "die Gläser", meaning: "Gelas" },
+        { word: "Tasse", article: "die", plural: "die Tassen", meaning: "Cangkir" },
+        { word: "Teller", article: "der", plural: "die Teller", meaning: "Piring" },
+        { word: "Löffel", article: "der", plural: "die Löffel", meaning: "Sendok" },
+        { word: "Gabel", article: "die", plural: "die Gabeln", meaning: "Garpu" },
+        { word: "Messer", article: "das", plural: "die Messer", meaning: "Pisau" },
+        { word: "Topf", article: "der", plural: "die Töpfe", meaning: "Panci" },
+        { word: "Pfanne", article: "die", plural: "die Pfannen", meaning: "Wajan" },
+        { word: "Fleisch", article: "das", plural: "die Fleischsorten", meaning: "Daging" },
+        { word: "Gemüse", article: "das", plural: "die Gemüse", meaning: "Sayuran" },
+        { word: "Obst", article: "das", plural: "die Obstsorten", meaning: "Buah-buahan" },
+        { word: "Zucker", article: "der", plural: "die Zucker", meaning: "Gula" },
+        { word: "Salz", article: "das", plural: "die Salze", meaning: "Garam" },
+        { word: "Pfeffer", article: "der", plural: "die Pfeffer", meaning: "Merica" },
+        { word: "Suppe", article: "die", plural: "die Suppen", meaning: "Sup" },
+        { word: "Kuchen", article: "der", plural: "die Kuchen", meaning: "Kue" },
+        { word: "Schokolade", article: "die", plural: "die Schokoladen", meaning: "Cokelat" }
+    ];
+
+    let currentMode = ""; 
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let currentVocab = null;
+
+    let timeLeft = 45;
+    let timerInterval = null;
+    let answerHistory = [];
+
+    function goHome() {
+        clearInterval(timerInterval);
+        document.getElementById('home-screen').classList.remove('hidden');
+        document.getElementById('quiz-screen').classList.add('hidden');
+        document.getElementById('result-container').classList.add('hidden');
+    }
+
+    function startQuiz(mode) {
+        currentMode = mode;
+        currentQuestions = [...vocabList].sort(() => 0.5 - Math.random());
+        
+        if (currentMode === 'meaning') {
+            currentQuestions = currentQuestions.slice(0, 10);
+        }
+
+        currentIndex = 0;
+        score = 0;
+        timeLeft = 45;
+        answerHistory = [];
+
+        document.getElementById('score-text').innerText = `Skor: ${score}`;
+        document.getElementById('home-screen').classList.add('hidden');
+        document.getElementById('quiz-screen').classList.remove('hidden');
+        document.getElementById('result-container').classList.add('hidden');
+
+        if (currentMode === 'meaning') {
+            document.getElementById('timer-text').style.display = 'none';
+        } else {
+            document.getElementById('timer-text').style.display = 'block';
+            startTimer();
+        }
+
+        loadQuestion();
+    }
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        document.getElementById('timer-text').innerText = `Waktu: ${timeLeft}s`;
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = `Waktu: ${timeLeft}s`;
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                endQuiz();
+            }
+        }, 1000);
+    }
+
+    function loadQuestion() {
+        if (currentIndex >= currentQuestions.length) {
+            endQuiz();
+            return;
+        }
+
+        currentVocab = currentQuestions[currentIndex];
+        document.getElementById('progress-text').innerText = `Soal: ${currentIndex + 1}${currentMode === 'meaning' ? '/10' : ''}`;
+
+        document.getElementById('step-article').classList.add('hidden');
+        document.getElementById('step-plural').classList.add('hidden');
+        document.getElementById('step-meaning').classList.add('hidden');
+
+        if (currentMode === 'article') {
+            document.getElementById('word-title').innerText = currentVocab.word;
+            document.getElementById('step-article').classList.remove('hidden');
+        } else if (currentMode === 'plural') {
+            document.getElementById('word-title').innerText = `${currentVocab.article.toUpperCase()} ${currentVocab.word}`;
+            document.getElementById('step-plural').classList.remove('hidden');
+            setupPluralOptions();
+        } else if (currentMode === 'meaning') {
+            document.getElementById('word-title').innerText = `${currentVocab.article.toUpperCase()} ${currentVocab.word}`;
+            document.getElementById('step-meaning').classList.remove('hidden');
+            const input = document.getElementById('meaning-input');
+            input.value = "";
+            input.focus();
+        }
+    }
+
+    function submitArticleAnswer(selectedArticle) {
+        let isCorrect = selectedArticle.toLowerCase() === currentVocab.article.toLowerCase();
+        if (isCorrect) score += 10;
+
+        answerHistory.push({
+            question: currentVocab.word,
+            userAnswer: selectedArticle.toUpperCase(),
+            correctAnswer: `${currentVocab.article.toUpperCase()} ${currentVocab.word}`,
+            isCorrect: isCorrect
+        });
+
+        document.getElementById('score-text').innerText = `Skor: ${score}`;
+        currentIndex++;
+        loadQuestion();
+    }
+
+    function setupPluralOptions() {
+        const container = document.getElementById('plural-options');
+        container.innerHTML = "";
+
+        let wrongPlurals = vocabList
+            .filter(v => v.plural !== currentVocab.plural)
+            .map(v => v.plural)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 2);
+
+        let options = [...wrongPlurals, currentVocab.plural].sort(() => 0.5 - Math.random());
+
+        options.forEach(opt => {
+            let btn = document.createElement('button');
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => submitPluralAnswer(opt);
+            container.appendChild(btn);
+        });
+    }
+
+    function submitPluralAnswer(selectedPlural) {
+        let isCorrect = selectedPlural === currentVocab.plural;
+        if (isCorrect) score += 10;
+
+        answerHistory.push({
+            question: `Plural dari ${currentVocab.article.toUpperCase()} ${currentVocab.word}`,
+            userAnswer: selectedPlural,
+            correctAnswer: currentVocab.plural,
+            isCorrect: isCorrect
+        });
+
+        document.getElementById('score-text').innerText = `Skor: ${score}`;
+        currentIndex++;
+        loadQuestion();
+    }
+
+    function handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            submitMeaningAnswer();
+        }
+    }
+
+    function submitMeaningAnswer() {
+        const input = document.getElementById('meaning-input');
+        let userAns = input.value.trim();
+        if (!userAns) return;
+
+        let isCorrect = userAns.toLowerCase() === currentVocab.meaning.toLowerCase();
+        if (isCorrect) score += 10;
+
+        answerHistory.push({
+            question: `Arti kata ${currentVocab.article.toUpperCase()} ${currentVocab.word}`,
+            userAnswer: userAns,
+            correctAnswer: currentVocab.meaning,
+            isCorrect: isCorrect
+        });
+
+        document.getElementById('score-text').innerText = `Skor: ${score}`;
+        currentIndex++;
+        loadQuestion();
+    }
+
+    function endQuiz() {
+        clearInterval(timerInterval);
+        document.getElementById('quiz-screen').classList.add('hidden');
+        document.getElementById('result-container').classList.remove('hidden');
+        document.getElementById('final-score').innerText = `Skor Akhir Kamu: ${score}`;
+
+        const evalContainer = document.getElementById('evaluation-list');
+        evalContainer.innerHTML = "";
+
+        if (answerHistory.length === 0) {
+            evalContainer.innerHTML = `<p style="color: #6b7280; text-align: center;">Waktu habis sebelum menjawab!</p>`;
+        } else {
+            answerHistory.forEach((item, index) => {
+                let div = document.createElement('div');
+                div.className = `eval-item ${item.isCorrect ? 'correct' : 'incorrect'}`;
+                div.innerHTML = `
+                    <strong>No ${index + 1}: ${item.question}</strong><br>
+                    <span>Jawaban kamu: <em>${item.userAnswer}</em></span><br>
+                    ${!item.isCorrect ? `<span style="color: #991b1b; font-weight: bold;">Koreksi Benar: ${item.correctAnswer}</span>` : `<span style="color: #065f46; font-weight: bold;">✔ Benar</span>`}
+                `;
+                evalContainer.appendChild(div);
+            });
+        }
+    }
+</script>
+
+</body>
+</html>
